@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Personality Quiz ✨</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    color: #fff;
+    overflow-x: hidden;
+  }
+
+  .container {
+    background: rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 24px;
+    padding: 40px 32px;
+    max-width: 560px;
+    width: 100%;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    animation: fadeIn 0.6s ease;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  h1 {
+    font-size: clamp(1.5rem, 5vw, 2.2rem);
+    margin-bottom: 10px;
+    font-weight: 700;
+  }
+
+  .subtitle {
+    opacity: 0.85;
+    margin-bottom: 28px;
+    font-size: 0.95rem;
+  }
+
+  .progress-bar {
+    height: 8px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 999px;
+    overflow: hidden;
+    margin-bottom: 30px;
+  }
+
+  .progress-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #f093fb, #f5576c);
+    border-radius: 999px;
+    transition: width 0.4s ease;
+  }
+
+  .question {
+    font-size: clamp(1.1rem, 4vw, 1.4rem);
+    font-weight: 600;
+    margin-bottom: 24px;
+    min-height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1.4;
+  }
+
+  .options {
+    display: grid;
+    gap: 12px;
+  }
+
+  .option-btn {
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    color: #fff;
+    padding: 14px 20px;
+    border-radius: 14px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-weight: 500;
+  }
+
+  .option-btn:hover {
+    background: rgba(255, 255, 255, 0.28);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+  }
+
+  .option-btn:active { transform: translateY(0); }
+
+  /* Name input */
+  .name-input {
+    width: 100%;
+    padding: 14px 20px;
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.15);
+    color: #fff;
+    font-size: 1rem;
+    text-align: center;
+    outline: none;
+    transition: all 0.2s ease;
+  }
+
+  .name-input::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+  }
+
+  .name-input:focus {
+    background: rgba(255, 255, 255, 0.25);
+    border-color: rgba(255, 255, 255, 0.5);
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
+  }
+
+  .submit-btn {
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #fff;
+    padding: 14px 32px;
+    border-radius: 14px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-top: 16px;
+  }
+
+  .submit-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateY(-2px);
+  }
+
+  /* Result screen */
+  .result {
+    display: none;
+    animation: popIn 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .result.show { display: block; }
+
+  @keyframes popIn {
+    0% { opacity: 0; transform: scale(0.5); }
+    100% { opacity: 1; transform: scale(1); }
+  }
+
+  .result-text {
+    font-size: clamp(1.8rem, 7vw, 3rem);
+    font-weight: 900;
+    line-height: 1.2;
+    margin: 20px 0;
+    background: linear-gradient(90deg, #ff6b6b, #feca57, #48dbfb, #ff9ff3);
+    background-size: 300% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: rainbow 3s linear infinite;
+  }
+
+  @keyframes rainbow {
+    0% { background-position: 0% 50%; }
+    100% { background-position: 300% 50%; }
+  }
+
+  .sub-result {
+    font-size: 1.1rem;
+    opacity: 0.9;
+    margin-bottom: 28px;
+  }
+
+  .restart-btn {
+    background: #fff;
+    color: #764ba2;
+    border: none;
+    padding: 14px 32px;
+    border-radius: 999px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+  }
+
+  .restart-btn:hover { transform: scale(1.05); }
+
+  .shake { animation: shake 0.6s ease; }
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20% { transform: translateX(-10px); }
+    40% { transform: translateX(10px); }
+    60% { transform: translateX(-6px); }
+    80% { transform: translateX(6px); }
+  }
+
+  /* Confetti */
+  .confetti {
+    position: fixed;
+    width: 10px;
+    height: 10px;
+    top: -10px;
+    pointer-events: none;
+    z-index: 9999;
+    animation: fall linear forwards;
+  }
+
+  @keyframes fall {
+    to { transform: translateY(110vh) rotate(720deg); }
+  }
+
+  @media (max-width: 480px) {
+    .container { padding: 28px 20px; border-radius: 18px; }
+    .question { min-height: 90px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container" id="container">
+  <!-- Name input screen -->
+  <div id="nameScreen">
+    <h1>✨ Deep Personality Quiz ✨</h1>
+    <p class="subtitle">First, let's get to know you...</p>
+    <div class="question">What's your name?</div>
+    <input type="text" class="name-input" id="nameInput" placeholder="Type your name here" maxlength="30" />
+    <button class="submit-btn" onclick="startQuiz()">Start Quiz →</button>
+  </div>
+
+  <!-- Quiz screen -->
+  <div id="quiz" style="display: none;">
+    <h1>✨ Deep Personality Quiz ✨</h1>
+    <p class="subtitle">Answer honestly — we're analyzing your soul.</p>
+
+    <div class="progress-bar">
+      <div class="progress-fill" id="progress"></div>
+    </div>
+
+    <div class="question" id="question">Loading...</div>
+    <div class="options" id="options"></div>
+  </div>
+
+  <!-- Result screen -->
+  <div class="result" id="result">
+    <h1>📊 Your Results Are In</h1>
+    <div class="result-text" id="resultText"></div>
+    <p class="sub-result">The data doesn't lie. Science has spoken.</p>
+    <button class="restart-btn" onclick="restart()">Prank Someone Else 🎯</button>
+  </div>
+</div>
+
+<script>
+  const questions = [
+    { q: "What's your favorite color?", opts: ["Blue", "Red", "Green", "Yellow"] },
+    { q: "Pineapple on pizza?", opts: ["Absolutely", "Never", "Only on Fridays", "I'm vegan"] },
+    { q: "Morning person or night owl?", opts: ["Morning 🌅", "Night 🌙", "I just sleep", "Coffee first"] },
+    { q: "Cats or dogs?", opts: ["Cats 🐱", "Dogs 🐶", "Both", "I'm allergic to fun"] },
+    { q: "Favorite season?", opts: ["Summer ☀️", "Winter ❄️", "Spring 🌸", "Fall 🍂"] },
+    { q: "How do you take your coffee?", opts: ["Black", "With milk", "Iced", "I hate coffee"] },
+    { q: "Biggest fear?", opts: ["Spiders", "Heights", "Public speaking", "Monday mornings"] },
+    { q: "Ideal weekend?", opts: ["Party 🎉", "Netflix 📺", "Hiking 🏔️", "Sleeping 😴"] },
+    { q: "Favorite food?", opts: ["Pizza", "Sushi", "Burgers", "Anything free"] },
+    { q: "How do you text?", opts: ["Novels 📖", "One word", "Emojis only", "Voice notes"] },
+    { q: "Favorite music genre?", opts: ["Hip-hop", "Pop", "Rock", "Whatever's trending"] },
+    { q: "Beach or mountains?", opts: ["Beach 🏖️", "Mountains 🏔️", "City", "My bed"] }
+  ];
+
+  const TOTAL_QUESTIONS = 7;
+  let current = 0;
+  let selectedQuestions = [];
+  let userName = "";
+
+  function startQuiz() {
+    const nameInput = document.getElementById('nameInput');
+    userName = nameInput.value.trim();
+    
+    if (!userName) {
+      nameInput.style.borderColor = '#ff6b6b';
+      nameInput.placeholder = 'Please enter your name!';
+      return;
+    }
+    
+    document.getElementById('nameScreen').style.display = 'none';
+    document.getElementById('quiz').style.display = 'block';
+    
+    pickQuestions();
+    renderQuestion();
+  }
+
+  function pickQuestions() {
+    const shuffled = [...questions].sort(() => Math.random() - 0.5);
+    selectedQuestions = shuffled.slice(0, TOTAL_QUESTIONS);
+  }
+
+  function renderQuestion() {
+    const q = selectedQuestions[current];
+    document.getElementById('question').textContent = q.q;
+    const optsDiv = document.getElementById('options');
+    optsDiv.innerHTML = '';
+    q.opts.forEach(opt => {
+      const btn = document.createElement('button');
+      btn.className = 'option-btn';
+      btn.textContent = opt;
+      btn.onclick = nextQuestion;
+      optsDiv.appendChild(btn);
+    });
+    document.getElementById('progress').style.width =
+      ((current) / TOTAL_QUESTIONS * 100) + '%';
+  }
+
+  function nextQuestion() {
+    current++;
+    if (current >= TOTAL_QUESTIONS) {
+      showResult();
+    } else {
+      renderQuestion();
+    }
+  }
+
+  function showResult() {
+    document.getElementById('progress').style.width = '100%';
+    document.getElementById('quiz').style.display = 'none';
+    const result = document.getElementById('result');
+    result.classList.add('show');
+    document.getElementById('resultText').textContent =
+      `That's why you're gay Like Nahom, ${userName}`;
+    document.getElementById('container').classList.add('shake');
+    launchConfetti();
+  }
+
+  function launchConfetti() {
+    const colors = ['#ff6b6b', '#feca57', '#48dbfb', '#ff9ff3', '#1dd1a1', '#f368e0'];
+    for (let i = 0; i < 80; i++) {
+      const c = document.createElement('div');
+      c.className = 'confetti';
+      c.style.left = Math.random() * 100 + 'vw';
+      c.style.background = colors[Math.floor(Math.random() * colors.length)];
+      c.style.animationDuration = (2 + Math.random() * 2) + 's';
+      c.style.animationDelay = Math.random() * 0.5 + 's';
+      c.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+      document.body.appendChild(c);
+      setTimeout(() => c.remove(), 5000);
+    }
+  }
+
+  function restart() {
+    current = 0;
+    userName = "";
+    document.getElementById('result').classList.remove('show');
+    document.getElementById('quiz').style.display = 'none';
+    document.getElementById('nameScreen').style.display = 'block';
+    document.getElementById('nameInput').value = '';
+    document.getElementById('nameInput').style.borderColor = 'rgba(255, 255, 255, 0.3)';
+    document.getElementById('nameInput').placeholder = 'Type your name here';
+    document.getElementById('container').classList.remove('shake');
+  }
+
+  // Allow Enter key to submit name
+  document.getElementById('nameInput').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+      startQuiz();
+    }
+  });
+</script>
+
+</body>
+</html>
